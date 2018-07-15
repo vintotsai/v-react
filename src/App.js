@@ -12,7 +12,7 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
         </header>
         <p className="App-intro">
-          To get started, edit and save to reload.
+          Edit and save to reload.
         </p>
         <FlightList tot={1}></FlightList>
       </div>

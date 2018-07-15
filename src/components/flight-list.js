@@ -62,7 +62,7 @@ export default class FlightList extends React.Component{
   render() {
     return (
       <div>
-        <Table columns={columns} dataSource={this.state.list} onChange={this.onChange}>table</Table>
+        <Table columns={columns} dataSource={this.state.list} onChange={this.onChange}></Table>
       </div>
     )
   }
