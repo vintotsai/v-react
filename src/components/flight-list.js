@@ -33,7 +33,7 @@ const columns = [{
 },{
   title: '折扣',
   dataIndex: 'discount'
-}];
+}]
 
 export default class FlightList extends React.Component{
   constructor() {
@@ -46,8 +46,8 @@ export default class FlightList extends React.Component{
     this.getData()
   }
   getData() {
-    axios.get('./mock-flights.json').then(res=>{
-      let data = res.data
+    axios.get('http://localhost:1234/flights').then(res=>{
+      let data = res.data.data
       console.log('data>>',data)
       data.data.map((item,index)=> {item.key = index})
       this.setState({

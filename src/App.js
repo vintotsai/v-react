@@ -12,7 +12,7 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
         </header>
         <p className="App-intro">
-          Edit and save to reload.
+        从北京至深圳航班信息
         </p>
         <FlightList tot={1}></FlightList>
       </div>
