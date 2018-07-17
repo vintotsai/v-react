@@ -11,10 +11,8 @@ class App extends Component {
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
         </header>
-        <p className="App-intro">
-        从北京至深圳航班信息
-        </p>
-        <FlightList tot={1}></FlightList>
+        
+        <FlightList tot={1}/>
       </div>
     );
   }
