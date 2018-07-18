@@ -1,9 +1,10 @@
-const app = require('express')()
+let app = require('express')()
 let db = require('./db.js')
+
 const port = 1234
 
 app.get('/', function (req, res) {
-  res.end('<div>Simple CRUD node.js + express application<br><br> <a href="/flights">flights list</a></div>')
+  res.end('<div> node.js + express web server<br><br> <a href="/flights">flights list</a></div>')
 })
 
 // 增
@@ -18,7 +19,7 @@ app.get('/flights/add', function (req, res) {
     newFlight.id = Date.now()
     list.push(newFlight)
     let newJson = {
-      desc: "从北京至深圳航班信息",
+      desc: "当天从北京至深圳航班信息",
       data: list
     }
     db.write(JSON.stringify(newJson), function (data) {
@@ -42,6 +43,7 @@ app.get('/flights', function (req, res) {
 })
 
 // delete
+// app.post? delete? 报错 @todo
 app.get('/flights/delete', function (req, res) {
   res.header({
     'access-control-allow-origin': '*'

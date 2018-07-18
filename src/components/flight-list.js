@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Popconfirm, Button, Modal, Form, Input, Radio} from 'antd'
+import { Table, Popconfirm, Button, Modal, Form, Input, Icon } from 'antd'
 import axios from 'axios'
 
 const FormItem = Form.Item
@@ -7,8 +7,14 @@ const FormItem = Form.Item
 const FlightCreateForm = Form.create()(
   class extends React.Component {
     render() {
-      const { visible, onCancel, onCreate, form } = this.props;
-      const { getFieldDecorator } = form;
+      const { visible, onCancel, onCreate, form,currentFlt } = this.props;
+      const { getFieldDecorator,setFieldValue } = form;
+      console.log('currentFlt>>',currentFlt)
+      // if(Object.keys(currentFlt).length) {
+      //   // 编辑
+      //   // getFieldDecorator = currentFlt
+      // }
+      // setFieldValue({currentFlt})
       return (
         <Modal
           visible={visible}
@@ -23,35 +29,35 @@ const FlightCreateForm = Form.create()(
               {getFieldDecorator('flightNo', {
                 rules: [{ required: true, message: '请输入航班号!' }],
               })(
-                <Input placeholder="深圳航空ZH9112"/>
+                <Input placeholder="深圳航空ZH9112" />
               )}
             </FormItem>
             <FormItem label="起飞时间">
               {getFieldDecorator('departureTime', {
                 rules: [{ required: true, message: '请输入起飞时间!' }],
               })(
-                <Input placeholder="00:00"/>
+                <Input placeholder="00:00" />
               )}
             </FormItem>
             <FormItem label="降落时间">
               {getFieldDecorator('arrivalTime', {
                 rules: [{ required: true, message: '请输入降落时间!' }],
               })(
-                <Input placeholder="00:00"/>
+                <Input placeholder="00:00" />
               )}
             </FormItem>
             <FormItem label="机票价格">
               {getFieldDecorator('price', {
                 rules: [{ required: true, message: '请输入价格!' }],
               })(
-                <Input placeholder="1920"/>
+                <Input placeholder="1920" />
               )}
             </FormItem>
             <FormItem label="折扣">
               {getFieldDecorator('discount', {
                 rules: [{ required: true, message: '请输入折扣!' }],
               })(
-                <Input placeholder="6.5"/>
+                <Input placeholder="6.5" />
               )}
             </FormItem>
           </Form>
@@ -68,7 +74,8 @@ export default class FlightList extends React.Component {
       list: [],
       flightDesc: '',
       sysTime: Date.now(),
-      visible:false
+      visible: false,
+      currentFlt: undefined
     }
     this.columns = [{
       title: '航班号',
@@ -109,9 +116,12 @@ export default class FlightList extends React.Component {
         return (
           this.state.list.length > 1
             ? (
-              <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.id)}>
-                <a href="javascript:;" style={{ 'color': 'red' }}>Delete</a>
-              </Popconfirm>
+              <div>
+                <a href="javascript:;" style={{ 'color': 'blue' }} onClick={() => this.showModal('edit', record)}>Edit</a>
+                <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.id)}>
+                  <a href="javascript:;" style={{ 'color': 'red', marginLeft: '10px' }}>Delete</a>
+                </Popconfirm>
+              </div>
             ) : null
         );
       },
@@ -126,17 +136,17 @@ export default class FlightList extends React.Component {
     this.getData()
   }
   componentDidMount() {
-    this.timer = setInterval(() => this.tickTok(), 1000)
+    // this.timer = setInterval(() => this.tickTok(), 1000)
   }
   componentWillUnmount() {
-    clearInterval(this.timer)
+    // clearInterval(this.timer)
   }
   getData() {
     axios.get('http://localhost:1234/flights').then(res => {
       let data = res.data.data
       console.log('data>>', data)
       // 添加唯一key
-      data.data.map((item, index) => { item.key = item.id })
+      // data.data.map((item, index) => { item.key = item.id })
       this.setState({
         list: data.data,
         flightDesc: data.desc
@@ -166,7 +176,7 @@ export default class FlightList extends React.Component {
       }
 
       console.log('Received values of form>>>', values)
-      axios.get('http://localhost:1234/flights/add',{params: { values}}).then(res=>{
+      axios.get('http://localhost:1234/flights/add', { params: { values } }).then(res => {
         console.log(res)
         let data = res.data.data.data
         data.map((item, index) => { item.key = item.id })
@@ -181,27 +191,36 @@ export default class FlightList extends React.Component {
     });
   }
   saveFormRef = (formRef) => {
-    this.formRef = formRef;
+    this.formRef = formRef
   }
-  showModal = () => {
-    this.setState({visible: true})
+  showModal = (type, record) => {
+    console.log(type, record)
+    if (type === 'edit') {
+      // 编辑
+      this.setState({ visible: true, currentFlt: record })
+    } else {
+      // 新建
+      this.setState({ visible: true })
+    }
   }
   render() {
     return (
       <div>
-        <p className="App-intro" onClick={() => this.setState({ flightDesc: 'Missing..' })}>{this.state.flightDesc}</p>
+        <p className="App-intro" onClick={() => this.setState({ flightDesc: 'What\'s up,amigo!' })}>{this.state.flightDesc}</p>
         {/* <p>{this.state.sysTime}</p> */}
         {/* <p>{this.props.tot}</p> */}
         <div className="list-btn">
-          <Button type="primary" onClick={this.showModal}>新建</Button>
-        </div> 
+          
+          <Button type="primary" onClick={this.showModal}><Icon type="plus" />Create</Button>
+        </div>
         <FlightCreateForm
           wrappedComponentRef={this.saveFormRef}
+          currentFlt={this.state.currentFlt}
           visible={this.state.visible}
           onCancel={this.handleCancel}
           onCreate={this.handleCreate}
         />
-        <Table columns={this.columns} dataSource={this.state.list} onChange={this.onChange}></Table>
+        <Table columns={this.columns} dataSource={this.state.list} rowKey={record=>record.id} onChange={this.onChange}></Table>
       </div>
     )
   }
