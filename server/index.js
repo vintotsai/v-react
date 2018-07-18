@@ -29,6 +29,32 @@ app.get('/flights/add', function (req, res) {
     })
   })
 })
+// 改
+app.get('/flights/edit', function (req, res) {
+  res.header({
+    'access-control-allow-origin': '*'
+  })
+  let newFlight = JSON.parse(req.query.values)
+  db.read(function (data) {
+    let list = data.data
+    list = list.map((item)=>{
+      if(item.id == newFlight.id) {
+        console.log('mapped item>>',item)
+        return newFlight
+      } 
+      return item
+    })
+    let newJson = {
+      desc: "当天从北京至深圳航班信息",
+      data: list
+    }
+    db.write(JSON.stringify(newJson), function (data) {
+      res.json({
+        data:newJson
+      })
+    })
+  })
+})
 
 // 查
 app.get('/flights', function (req, res) {
@@ -49,7 +75,6 @@ app.get('/flights/delete', function (req, res) {
     'access-control-allow-origin': '*'
   })
   let id = req.query.id
-  
   db.read(function(data){
     let list = data.data
     list = list.filter((item)=>{

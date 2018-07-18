@@ -7,27 +7,23 @@ const FormItem = Form.Item
 const FlightCreateForm = Form.create()(
   class extends React.Component {
     render() {
-      const { visible, onCancel, onCreate, form,currentFlt } = this.props;
-      const { getFieldDecorator,setFieldValue } = form;
-      console.log('currentFlt>>',currentFlt)
-      // if(Object.keys(currentFlt).length) {
-      //   // 编辑
-      //   // getFieldDecorator = currentFlt
-      // }
-      // setFieldValue({currentFlt})
+      const { visible, onCancel, onCreate, onEdit, form, currentFlt } = this.props
+      const { getFieldDecorator } = form
+      console.log('currentFlt>>', currentFlt)
       return (
         <Modal
           visible={visible}
-          title="新建航班信息"
-          okText="新建"
+          title={currentFlt ? "编辑航班信息" : '新建航班信息'}
+          okText={currentFlt ? "确定" : '新建'}
           cancelText="取消"
           onCancel={onCancel}
-          onOk={onCreate}
+          onOk={currentFlt ? onEdit : onCreate}
         >
           <Form layout="vertical">
             <FormItem label="航班号">
               {getFieldDecorator('flightNo', {
                 rules: [{ required: true, message: '请输入航班号!' }],
+                initialValue: currentFlt ? currentFlt.flightNo : undefined,
               })(
                 <Input placeholder="深圳航空ZH9112" />
               )}
@@ -35,6 +31,7 @@ const FlightCreateForm = Form.create()(
             <FormItem label="起飞时间">
               {getFieldDecorator('departureTime', {
                 rules: [{ required: true, message: '请输入起飞时间!' }],
+                initialValue: currentFlt ? currentFlt.departureTime : undefined,
               })(
                 <Input placeholder="00:00" />
               )}
@@ -42,6 +39,7 @@ const FlightCreateForm = Form.create()(
             <FormItem label="降落时间">
               {getFieldDecorator('arrivalTime', {
                 rules: [{ required: true, message: '请输入降落时间!' }],
+                initialValue: currentFlt ? currentFlt.arrivalTime : undefined,
               })(
                 <Input placeholder="00:00" />
               )}
@@ -49,6 +47,7 @@ const FlightCreateForm = Form.create()(
             <FormItem label="机票价格">
               {getFieldDecorator('price', {
                 rules: [{ required: true, message: '请输入价格!' }],
+                initialValue: currentFlt ? currentFlt.price : undefined,
               })(
                 <Input placeholder="1920" />
               )}
@@ -56,6 +55,7 @@ const FlightCreateForm = Form.create()(
             <FormItem label="折扣">
               {getFieldDecorator('discount', {
                 rules: [{ required: true, message: '请输入折扣!' }],
+                initialValue: currentFlt ? currentFlt.discount : undefined,
               })(
                 <Input placeholder="6.5" />
               )}
@@ -145,8 +145,6 @@ export default class FlightList extends React.Component {
     axios.get('http://localhost:1234/flights').then(res => {
       let data = res.data.data
       console.log('data>>', data)
-      // 添加唯一key
-      // data.data.map((item, index) => { item.key = item.id })
       this.setState({
         list: data.data,
         flightDesc: data.desc
@@ -154,7 +152,7 @@ export default class FlightList extends React.Component {
     })
   }
   onChange(pagination, filters, sorter) {
-    console.log('params', pagination, filters, sorter);
+    console.log('params', pagination, filters, sorter)
   }
 
   handleDelete = (id) => {
@@ -166,7 +164,7 @@ export default class FlightList extends React.Component {
     })
   }
   handleCancel = () => {
-    this.setState({ visible: false })
+    this.setState({ visible: false, currentFlt: undefined })
   }
   handleCreate = () => {
     const form = this.formRef.props.form
@@ -174,21 +172,36 @@ export default class FlightList extends React.Component {
       if (err) {
         return false
       }
-
       console.log('Received values of form>>>', values)
       axios.get('http://localhost:1234/flights/add', { params: { values } }).then(res => {
         console.log(res)
         let data = res.data.data.data
-        data.map((item, index) => { item.key = item.id })
-
         this.setState({
           list: data
         })
       })
       form.resetFields()
       this.setState({ visible: false })
-
-    });
+    })
+  }
+  handleEdit = () => {
+    const form = this.formRef.props.form
+    form.validateFields((err, values) => {
+      if (err) {
+        return false
+      }
+      console.log('Received edit values of form>>>', values)
+      values.id = this.state.currentFlt.id
+      axios.get('http://localhost:1234/flights/edit', { params: { values } }).then(res => {
+        console.log(res)
+        let data = res.data.data.data
+        this.setState({
+          list: data
+        })
+      })
+      form.resetFields()
+      this.setState({ visible: false, currentFlt: undefined  })
+    })
   }
   saveFormRef = (formRef) => {
     this.formRef = formRef
@@ -210,7 +223,6 @@ export default class FlightList extends React.Component {
         {/* <p>{this.state.sysTime}</p> */}
         {/* <p>{this.props.tot}</p> */}
         <div className="list-btn">
-          
           <Button type="primary" onClick={this.showModal}><Icon type="plus" />Create</Button>
         </div>
         <FlightCreateForm
@@ -219,8 +231,9 @@ export default class FlightList extends React.Component {
           visible={this.state.visible}
           onCancel={this.handleCancel}
           onCreate={this.handleCreate}
+          onEdit={this.handleEdit}
         />
-        <Table columns={this.columns} dataSource={this.state.list} rowKey={record=>record.id} onChange={this.onChange}></Table>
+        <Table columns={this.columns} dataSource={this.state.list} rowKey={record => record.id} onChange={this.onChange}></Table>
       </div>
     )
   }
