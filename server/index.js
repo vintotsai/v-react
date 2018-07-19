@@ -24,7 +24,7 @@ app.get('/flights/add', function (req, res) {
     }
     db.write(JSON.stringify(newJson), function (data) {
       res.json({
-        data:newJson
+        data: newJson
       })
     })
   })
@@ -37,20 +37,20 @@ app.get('/flights/edit', function (req, res) {
   let newFlight = JSON.parse(req.query.values)
   db.read(function (data) {
     let list = data.data
-    list = list.map((item)=>{
-      if(item.id == newFlight.id) {
-        console.log('mapped item>>',item)
+    list = list.map((item) => {
+      if (item.id == newFlight.id) {
+        console.log('mapped item>>', item)
         return newFlight
-      } 
+      }
       return item
     })
     let newJson = {
-      desc: "当天从北京至深圳航班信息",
+      desc: "当日 北京飞深圳 航班信息",
       data: list
     }
     db.write(JSON.stringify(newJson), function (data) {
       res.json({
-        data:newJson
+        data: newJson
       })
     })
   })
@@ -75,13 +75,13 @@ app.get('/flights/delete', function (req, res) {
     'access-control-allow-origin': '*'
   })
   let id = req.query.id
-  db.read(function(data){
+  db.read(function (data) {
     let list = data.data
-    list = list.filter((item)=>{
+    list = list.filter((item) => {
       return item.id != id
     })
     let newJson = {
-      desc: "从北京至深圳航班信息",
+      desc: "当日 北京飞深圳 航班信息",
       data: list
     }
     db.write(JSON.stringify(newJson), function () {
