@@ -19,7 +19,7 @@ app.get('/flights/add', function (req, res) {
     newFlight.id = Date.now()
     list.push(newFlight)
     let newJson = {
-      desc: "当天从北京至深圳航班信息",
+      desc: "当日 北京飞深圳 航班信息",
       data: list
     }
     db.write(JSON.stringify(newJson), function (data) {

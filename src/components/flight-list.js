@@ -83,7 +83,7 @@ export default class FlightList extends React.Component {
       title: '航班号',
       dataIndex: 'flightNo'
     }, {
-      title: '起飞时间',
+      title: '起飞时间(PEK)',
       dataIndex: 'departureTime',
       defaultSortOrder: 'ascend',
       sorter: (a, b) => {
@@ -94,7 +94,7 @@ export default class FlightList extends React.Component {
         return _a - _b
       },
     }, {
-      title: '降落时间',
+      title: '降落时间(PEK)',
       dataIndex: 'arrivalTime',
       sorter: (a, b) => {
         let aTime = a.departureTime.split(':'),
@@ -104,7 +104,7 @@ export default class FlightList extends React.Component {
         return _a - _b
       },
     }, {
-      title: '机票价格',
+      title: '机票价格(￥)',
       dataIndex: 'price',
       sorter: (a, b) => parseInt(a.price) - parseInt(b.price),
     }, {
@@ -155,7 +155,7 @@ export default class FlightList extends React.Component {
     })
   }
   onChange(pagination, filters, sorter) {
-    console.log('params', pagination, filters, sorter)
+    // console.log('params', pagination, filters, sorter)
   }
 
   handleDelete = (id) => {
