@@ -3,6 +3,7 @@ import { Table, Popconfirm, Button, Modal, Form, Input, Icon } from 'antd'
 import axios from 'axios'
 
 const FormItem = Form.Item
+const Search = Input.Search
 
 const FlightCreateForm = Form.create()(
   class extends React.Component {
@@ -71,11 +72,12 @@ export default class FlightList extends React.Component {
   constructor() {
     super()
     this.state = {
-      list: [],
+      list: [], // 展示数组
+      rawList: [], // 原数组
       flightDesc: '',
       sysTime: Date.now(),
-      visible: false,
-      currentFlt: undefined
+      visible: false, // 新建或编辑的弹窗
+      currentFlt: undefined // 当前编辑的航班信息
     }
     this.columns = [{
       title: '航班号',
@@ -147,6 +149,7 @@ export default class FlightList extends React.Component {
       console.log('data>>', data)
       this.setState({
         list: data.data,
+        rawList: data.data,
         flightDesc: data.desc
       })
     })
@@ -177,7 +180,8 @@ export default class FlightList extends React.Component {
         console.log(res)
         let data = res.data.data.data
         this.setState({
-          list: data
+          list: data,
+          rawList: data
         })
       })
       form.resetFields()
@@ -196,25 +200,39 @@ export default class FlightList extends React.Component {
         console.log(res)
         let data = res.data.data.data
         this.setState({
-          list: data
+          list: data,
+          rawList:data.data
         })
       })
       form.resetFields()
-      this.setState({ visible: false, currentFlt: undefined  })
+      this.setState({ visible: false, currentFlt: undefined })
     })
+  }
+  handleSearch(val) {
+    console.log(val)
+    val = val.trim()
+    if (val) {
+      let searchResult = this.state.list.filter((item) => {
+        if (item.flightNo.indexOf(val) > -1) {
+          return item
+        }
+      })
+      if(searchResult.length) {
+        this.setState({list: searchResult})
+      } else {
+        this.setState({list: []})
+      }
+    }
+  }
+  handleClear = () => {
+    this.refs.searchRef.input.input.value = ''
+    this.setState({list: this.state.rawList})
   }
   saveFormRef = (formRef) => {
     this.formRef = formRef
   }
   showModal = (type, record) => {
-    console.log(type, record)
-    if (type === 'edit') {
-      // 编辑
-      this.setState({ visible: true, currentFlt: record })
-    } else {
-      // 新建
-      this.setState({ visible: true })
-    }
+    this.setState({ visible: true, currentFlt: type === 'edit' ? record : undefined })
   }
   render() {
     return (
@@ -223,7 +241,14 @@ export default class FlightList extends React.Component {
         {/* <p>{this.state.sysTime}</p> */}
         {/* <p>{this.props.tot}</p> */}
         <div className="list-btn">
-          <Button type="primary" onClick={this.showModal}><Icon type="plus" />Create</Button>
+          <Search
+            placeholder="请输入航司，如：深圳航空"
+            ref="searchRef"
+            onSearch={value => this.handleSearch(value)}
+            style={{ width: 400 }}
+            enterButton />
+          <Button className="clear-btn" onClick={this.handleClear} type="danger"><Icon type="delete"/>清空条件</Button>
+          <Button className="create-btn" type="primary" onClick={this.showModal}><Icon type="plus" />Create</Button>
         </div>
         <FlightCreateForm
           wrappedComponentRef={this.saveFormRef}

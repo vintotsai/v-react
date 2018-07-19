@@ -33,6 +33,11 @@
   overflow: hidden;
   margin-bottom: 10px;
 }
-.list-btn button {
+.list-btn .clear-btn {
+  /* float: right; */
+  margin-left: 10px;
+}
+.list-btn .create-btn {
   float: right;
+  margin-left: 10px;
 }
