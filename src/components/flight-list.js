@@ -99,8 +99,8 @@ export default class FlightList extends React.Component {
       title: '降落时间(PEK)',
       dataIndex: 'arrivalTime',
       sorter: (a, b) => {
-        let aTime = a.departureTime.split(':'),
-          bTime = b.departureTime.split(':'),
+        let aTime = a.arrivalTime.split(':'),
+          bTime = b.arrivalTime.split(':'),
           _a = parseInt(aTime[0]) * 60 + parseInt(aTime[1]),
           _b = parseInt(bTime[0]) * 60 + parseInt(bTime[1])
         return _a - _b
@@ -238,49 +238,32 @@ export default class FlightList extends React.Component {
   getOption = () => {
     // 浅拷贝
     let list = JSON.parse(JSON.stringify(this.state.list))
-    let airlines = [], prices = []
+    let prices = [], airlines = []
     if (list.length) {
       // 筛选相同航司中的最高价
+      let _airlines = []
       list.forEach((item) => {
         item.flightNo = item.flightNo.substr(0, 4)
+        _airlines.push(item.flightNo)
       })
-      console.log('rawList>>>', list)
-      let _arr = []
-      // for (let i = 0; i < list.length; i++) {
-      //   const first = list[i]
-      //   // _arr.push(first)
-      //   for (let j = i+1; j < list.length; j++) {
-      //     const second = list[j]
-      //     if(first.flightNo === second.flightNo && first.price < second.price) {
-      //       _arr.splice(i,1,second)
-      //     } else {
-      //       _arr.push(second)
-      //     }
-      //   }
-      // }
+      airlines = [...new Set(_airlines)]
+      console.log('airlines>>',airlines)
 
-      var arr = [1,2,4,4,3,3,1,5,3]
-
-      function res(arr) {
-          var tmp = [];
-          arr.sort().sort(function (a,b) {
-              if(a === b && tmp.indexOf(a) === -1){
-                  tmp.push(a)
-              }
-          })
-          return tmp
+      let _arrPrice = [] // eg: [[1,2,3],[3],[1,4,3]]
+      for (let j = 0; j < airlines.length; j++) {
+        const _flightNo = airlines[j]
+        _arrPrice[j] = []
+        for (let k = 0; k < list.length; k++) {
+          const flightInfo = list[k]
+          if (flightInfo.flightNo === _flightNo) {
+            _arrPrice[j].push(parseFloat(flightInfo.price))
+          }
+        }
       }
-      var result = res(arr)
-      console.log(result )
-
-
-      list.map((item)=>{
-        // item.flight
-      })
-      console.log('_arr>>>',_arr)
+      prices = _arrPrice.map(item => Math.max(...item))
+      console.log('_arrPrice>>>', prices)
     }
-    airlines = ['深圳航空', '中国国航', '东方航空', '海南航空', '南方航空', '中国联航', '奥凯航空']
-    prices = [1460, 1920, 1710, 1860, 1920, 1498, 1668]
+
     return {
       title: {
         text: '航空公司机票价格'
