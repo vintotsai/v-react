@@ -261,7 +261,7 @@ export default class FlightList extends React.Component {
         }
       }
       prices = _arrPrice.map(item => Math.max(...item))
-      console.log('_arrPrice>>>', prices)
+      console.log('prices>>>', prices)
     }
 
     return {
