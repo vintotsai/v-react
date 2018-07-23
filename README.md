@@ -14,6 +14,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Structure
 
+{"values":"{\"flightNo\":\"昆明航空KY9112333333333333333333333\",\"departureTime\":\"11:20\",\"arrivalTime\":\"14:45\",\"price\":\"1940\",\"discount\":\"8.5\"}"}:""
+
+
+
 ```
 vin-react/
   README.md

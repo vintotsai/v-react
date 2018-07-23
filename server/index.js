@@ -1,36 +1,48 @@
 let app = require('express')()
 let db = require('./db.js')
+let bodyParser = require('body-parser')
+
 
 const port = 1234
+
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+
+app.all('*', function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*")
+  res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,PATCH,OPTIONS")
+  next()
+})
+
 
 app.get('/', function (req, res) {
   res.end('<div> node.js + express web server<br><br> <a href="/flights">flights list</a></div>')
 })
 
 // 增
-app.get('/flights/add', function (req, res) {
-  res.header({
-    'access-control-allow-origin': '*'
-  })
-  let newFlight = JSON.parse(req.query.values)
+app.post('/flights/add', function (req, res) {
+  let newFlight = req.body.values
   console.log(newFlight)
-  db.read(function (data) {
-    let list = data.data
-    newFlight.id = Date.now()
-    list.push(newFlight)
-    let newJson = {
-      desc: "当日 北京飞深圳 航班信息",
-      data: list
-    }
-    db.write(JSON.stringify(newJson), function (data) {
-      res.json({
-        data: newJson
+  if(newFlight && typeof newFlight === ''){
+    db.read(function (data) {
+      let list = data.data
+      newFlight.id = Date.now()
+      list.push(newFlight)
+      let newJson = {
+        desc: "当日 北京飞深圳 航班信息",
+        data: list
+      }
+      db.write(JSON.stringify(newJson), function (data) {
+        res.json({
+          data: newJson
+        })
       })
     })
+  }
   })
-})
-// 改
-app.get('/flights/edit', function (req, res) {
+  // 改
+  app.get('/flights/edit', function (req, res) {
   res.header({
     'access-control-allow-origin': '*'
   })

@@ -178,7 +178,13 @@ export default class FlightList extends React.Component {
         return false
       }
       console.log('Received values of form>>>', values)
-      axios.get('http://localhost:1234/flights/add', { params: { values } }).then(res => {
+      // axios.post('http://localhost:1234/flights/add', { params: { values } }).then(res => {
+      axios.post('http://localhost:1234/flights/add', JSON.stringify({ values}), {
+        headers: {
+          "content-type": "multipart/form-data",
+          // "Content-Type": "application/json"
+        }
+      }).then(res => {
         console.log(res)
         let data = res.data.data.data
         this.setState({
@@ -247,7 +253,7 @@ export default class FlightList extends React.Component {
         _airlines.push(item.flightNo)
       })
       airlines = [...new Set(_airlines)]
-      console.log('airlines>>',airlines)
+      console.log('airlines>>', airlines)
 
       let _arrPrice = [] // eg: [[1,2,3],[3],[1,4,3]]
       for (let j = 0; j < airlines.length; j++) {
