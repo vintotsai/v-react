@@ -178,13 +178,7 @@ export default class FlightList extends React.Component {
         return false
       }
       console.log('Received values of form>>>', values)
-      // axios.post('http://localhost:1234/flights/add', { params: { values } }).then(res => {
-      axios.post('http://localhost:1234/flights/add', JSON.stringify({ values}), {
-        headers: {
-          "content-type": "multipart/form-data",
-          // "Content-Type": "application/json"
-        }
-      }).then(res => {
+      axios.post('http://localhost:1234/flights/add', { values }).then(res => {
         console.log(res)
         let data = res.data.data.data
         this.setState({
@@ -204,7 +198,7 @@ export default class FlightList extends React.Component {
       }
       console.log('Received edit values of form>>>', values)
       values.id = this.state.currentFlt.id
-      axios.get('http://localhost:1234/flights/edit', { params: { values } }).then(res => {
+      axios.post('http://localhost:1234/flights/edit', { values }).then(res => {
         console.log(res)
         let data = res.data.data.data
         this.setState({
