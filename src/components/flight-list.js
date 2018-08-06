@@ -70,8 +70,10 @@ const FlightCreateForm = Form.create()(
 )
 
 export default class FlightList extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    // super(props) // super代表的是父类的构造函数
+    super(props) // 不传props 调用super()时 this.props === undefined
+    console.log(this.props)
     this.state = {
       list: [], // 展示数组
       rawList: [], // 原数组
