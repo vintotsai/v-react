@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <form action="" id="tot">
+    <label for="foo">foo:
+      <input type="text" id="foo" value="hah" hidden name="name">
+    </label>
+  </form>
+  <input type="color" form="tot" name="color">
+  <button type="submit" form="tot" formaction="http://localhost:8080" formmethod="POST">submit</button>
+  <input type="search">
+  <input type="image">
+  <hr>
+  <form method="post" enctype="multipart/form-data">
+    <div>
+      <label for="file">Choose file to upload</label>
+      <input type="file" id="file" name="file" multiple>
+    </div>
+    <div>
+      <button formaction="http://localhost:8080">Submit</button>
+    </div>
+  </form>
+  <label for="sel" style="vertical-align: top;">
+    select:
+    <select id="sel" name="text" form="tot" size="5" multiple>
+      <!--Supplement an id here instead of using 'text'-->
+      <option value="first">First Value</option>
+      <option value="second" selected>Second Value</option>
+      <option value="third">Third Value</option>
+    </select>
+  </label>
+  <br>
+  <label for="ckb">
+    <input type="checkbox" name="checkbox" id="ckb">enenne
+  </label>
+  <label for="ckb">
+    <input type="checkbox" name="checkbox" id="ckb1">enenne1
+  </label>
+  <br>
+  <textarea name="textarea" form="tot" id="" cols="30" rows="10" wrap="hard">ssss qqq hhhhha 2333 bbbbb llll kkk kjj </textarea>
+  <!-- <embed height="415" width="544" quality="high" allowfullscreen="true" type="application/x-shockwave-flash" src="https://www.bilibili.com//static.hdslb.com/miniloader.swf" flashvars="aid=14020589"></embed> -->
+</body>
+
+</html>
