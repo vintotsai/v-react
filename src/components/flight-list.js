@@ -70,8 +70,10 @@ const FlightCreateForm = Form.create()(
 )
 
 export default class FlightList extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    // super(props) // super代表的是父类的构造函数
+    super(props) // 不传props 调用super()时 this.props === undefined
+    console.log(this.props)
     this.state = {
       list: [], // 展示数组
       rawList: [], // 原数组
@@ -178,7 +180,7 @@ export default class FlightList extends React.Component {
         return false
       }
       console.log('Received values of form>>>', values)
-      axios.get('http://localhost:1234/flights/add', { params: { values } }).then(res => {
+      axios.post('http://localhost:1234/flights/add', { values }).then(res => {
         console.log(res)
         let data = res.data.data.data
         this.setState({
@@ -198,7 +200,7 @@ export default class FlightList extends React.Component {
       }
       console.log('Received edit values of form>>>', values)
       values.id = this.state.currentFlt.id
-      axios.get('http://localhost:1234/flights/edit', { params: { values } }).then(res => {
+      axios.post('http://localhost:1234/flights/edit', { values }).then(res => {
         console.log(res)
         let data = res.data.data.data
         this.setState({
@@ -247,7 +249,7 @@ export default class FlightList extends React.Component {
         _airlines.push(item.flightNo)
       })
       airlines = [...new Set(_airlines)]
-      console.log('airlines>>',airlines)
+      console.log('airlines>>', airlines)
 
       let _arrPrice = [] // eg: [[1,2,3],[3],[1,4,3]]
       for (let j = 0; j < airlines.length; j++) {
